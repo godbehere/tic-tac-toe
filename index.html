@@ -10,7 +10,34 @@
 
 </head>
 <body>
-	
+	<div id='gameboard'>
+		<div data-num='0' class='game-square'></div>
+		<div data-num='1' class='game-square'></div>
+		<div data-num='2' class='game-square'></div>
+		<div data-num='3' class='game-square'></div>
+		<div data-num='4' class='game-square'></div>
+		<div data-num='5' class='game-square'></div>
+		<div data-num='6' class='game-square'></div>
+		<div data-num='7' class='game-square'></div>
+		<div data-num='8' class='game-square'></div>
+	</div>
+
+	<button id='newGameBtn'>New Game</button>
+	<button id='resetGameBtn'>Reset Game</button>
+
+	<div id="newGameModal" class="modal">
+		<div class="modal-content">
+		<span class="close">&times;</span>
+		<p>Some text in the Modal..</p>
+		<form id=newGameForm>
+			<label for='player1'>Player 1</label>
+			<input id='player1' type='text'>
+			<label for='player2'>Player 2</label>
+			<input id='player2' type='text'>
+			<input id='newGameSubmit' type='button' value='Start Game'>
+		</form>
+		</div>
+	</div>
 
 	<script src="/script/script.js"></script>
 </body>
