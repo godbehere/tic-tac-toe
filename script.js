@@ -22,7 +22,7 @@ const player = function(name, marker){
         alert(`${Name} has won the game.`);
     }
 
-    return { displayScore, winGame, Marker, };
+    return { displayScore, winGame, Marker, Name, };
 
 };
 
@@ -120,6 +120,9 @@ const gameplay = (function(doc){
             gameActive = true;
             hideModal(newGameModal);
             gameBoard.clearBoard();
+            if(currentPlayer.Name == 'Computer') {
+                aiTurn();
+            }
         }
     });
 
@@ -134,9 +137,14 @@ const gameplay = (function(doc){
     newGameBtn.addEventListener('click', showModal.bind(null, newGameModal));
 
     resetGameBtn.addEventListener('click', () => {
-        gameBoard.clearBoard();
-        currentPlayer = player1;
-        gameActive = true;
+        if(player1 && player2) {
+            gameBoard.clearBoard();
+            currentPlayer = player1;
+            gameActive = true;
+            if(currentPlayer.Name == 'Computer') {
+                aiTurn();
+            }
+        }
     });
     
     newGameSpan.addEventListener('click', hideModal.bind(null, newGameModal));
@@ -148,31 +156,48 @@ const gameplay = (function(doc){
     });
 
     const checkBoard = function(board) {
+        let winValue = 0;
         if(board[0] && board[0] == board[1] && board[0] == board[2]){
             //alert('Row 1');
-            return true;
-        } else if(board[3] && board[3] == board[4] && board[3] == board[5]) {
-            //alert('Row 2');
-            return true;
-        } else if(board[6] && board[6] == board[7] && board[6] == board[8]) {
-            //alert('Row 3');
-            return true;
-        } else if(board[0] && board[0] == board[3] && board[0] == board[6]) {
-            //alert('Col 1');
-            return true;
-        } else if(board[1] && board[1] == board[4] && board[1] == board[7]) {
-            //alert('Col 2');
-            return true;
-        } else if(board[2] && board[2] == board[5] && board[2] == board[8]) {
-            //alert('Col 3');
-            return true;
-        } else if(board[0] && board[0] == board[4] && board[0] == board[8]) {
-            //alert('Diag 1');
-            return true;
-        } else if(board[2] && board[2] == board[4] && board[2] == board[6]) {
-            //alert('Diag 2');
-            return true;
+            //return true;
+            winValue++;
         }
+        if(board[3] && board[3] == board[4] && board[3] == board[5]) {
+            //alert('Row 2');
+            //return true;
+            winValue++;
+        }
+        if(board[6] && board[6] == board[7] && board[6] == board[8]) {
+            //alert('Row 3');
+            //return true;
+            winValue++;
+        }
+        if(board[0] && board[0] == board[3] && board[0] == board[6]) {
+            //alert('Col 1');
+            //return true;
+            winValue++;
+        }
+        if(board[1] && board[1] == board[4] && board[1] == board[7]) {
+            //alert('Col 2');
+            //return true;
+            winValue++;
+        }
+        if(board[2] && board[2] == board[5] && board[2] == board[8]) {
+            //alert('Col 3');
+            //return true;
+            winValue++;
+        }
+        if(board[0] && board[0] == board[4] && board[0] == board[8]) {
+            //alert('Diag 1');
+            //return true;
+            winValue++;
+        }
+        if(board[2] && board[2] == board[4] && board[2] == board[6]) {
+            //alert('Diag 2');
+            //return true;
+            winValue++;
+        }
+        return winValue;
     };
 
     const takeTurn = function() {
@@ -198,6 +223,10 @@ const gameplay = (function(doc){
             }
 
             currentPlayer = nextPlayer;
+
+            if(currentPlayer.Name == 'Computer') {
+                aiTurn();
+            }
         }
     };
 
@@ -207,7 +236,66 @@ const gameplay = (function(doc){
 
     showModal(newGameModal);
 
-    return {  };
+    const aiTurn = function() {
+        let currentPieces = gameBoard.copyPiecesArray();
+        let moves = [];
+        let otherPlayer;
+
+        if(currentPlayer == player1) {
+            otherPlayer = player2;
+        } else {
+            otherPlayer = player1;
+        }
+
+        for(let i = 0; i <= 8; i++){
+            moves.push(0);
+            currentPieces = gameBoard.copyPiecesArray();
+            if(!currentPieces[i]) {
+                //console.log(i);
+                currentPieces[i] = currentPlayer.Marker;
+                //console.log(currentPieces);
+                if(checkBoard(currentPieces)) {
+                    //console.log(`Current player can win by playing at ${i}`)
+                    //takeTurn.call(gameBoard.gameSquares[i]);
+                    moves[i] += 5;
+                }
+                currentPieces = gameBoard.copyPiecesArray();
+                
+                currentPieces[i] = otherPlayer.Marker;
+                if(checkBoard(currentPieces)) {
+                    moves[i] += checkBoard(currentPieces);
+                }
+            }
+        }
+
+        let moveLocation = 0;
+        let moveValue = 0;
+
+        for(let i = 0; i <= 8; i++){
+            if(moves[i] > moveValue){
+                moveValue = moves[i];
+                moveLocation = i;
+            }
+        }
+
+        if(moveValue == 0) {
+            if(!gameBoard.getPieces()[4]){
+                moveLocation = 4;
+            } else {
+                for(let i = 0; i <= 8; i++){
+                    if(!gameBoard.getPieces()[i]) {
+                        moveLocation = i;
+                        break;
+                    }
+                }
+            }             
+        }
+        takeTurn.call(gameBoard.gameSquares[moveLocation]);
+
+    };
+
+
+    return { aiTurn, };
 })(document || mockDocument);
 
 /////////////////////////////////////////////////////////////////////////

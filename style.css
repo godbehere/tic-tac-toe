@@ -1,18 +1,23 @@
 #gameboard {
     display: grid;
+    background-color: black;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     height: 250px;
     width: 250px;
+    box-shadow: inset 3px 3px 0px white, inset -3px -3px 0px white;
 }
 
 .game-square {
     margin: 2px;
     padding: 2px;
-    border: 1px solid black;
+    background-color: white;
     text-align: center;
     font-size: xxx-large;
     cursor: pointer;
+    font-family: 'Satisfy', cursive;
+    color: black;
+    text-shadow: 0 0 2px black;
 }
 
 #newGameForm {
